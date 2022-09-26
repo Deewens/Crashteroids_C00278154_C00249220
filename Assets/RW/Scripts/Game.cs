@@ -85,6 +85,7 @@ public class Game : MonoBehaviour
         spawner.BeginSpawning();
         shipModel.GetComponent<Ship>().RepairShip();
         spawner.ClearAsteroids();
+        spawner.ClearPowerUps();
         gameOverText.enabled = false;
     }
 

@@ -50,6 +50,9 @@ public class Ship : MonoBehaviour
     private float maxLeft = -8;
     private float maxRight = 8;
 
+    private bool isShootPowerUpActive = false;
+    public bool IsShootPowerUpActive => isShootPowerUpActive;
+
     private void Update()
     {
         if (isDead)
@@ -83,8 +86,28 @@ public class Ship : MonoBehaviour
         canShoot = false;
         GameObject laserShot = SpawnLaser();
         laserShot.transform.position = shotSpawn.position;
-        yield return new WaitForSeconds(0.4f);
+        
+        if (IsShootPowerUpActive)
+            yield return new WaitForSeconds(0.1f);
+        else
+            yield return new WaitForSeconds(0.4f);
+        
         canShoot = true;
+    }
+
+    public void ActivateShootPowerUp()
+    {
+        StartCoroutine(ShootPowerUp());
+    }
+    
+    /***
+     * Activate the shoot power up for a limited amount of time
+     */
+    private IEnumerator ShootPowerUp()
+    {
+        isShootPowerUpActive = true;
+        yield return new WaitForSeconds(3f);
+        isShootPowerUpActive = false;
     }
 
     public GameObject SpawnLaser()

@@ -36,18 +36,18 @@ public class Spawner : MonoBehaviour
 {
     public List<GameObject> asteroids = new List<GameObject>();
 
-    [SerializeField]
-    private GameObject asteroid1;
-    [SerializeField]
-    private GameObject asteroid2;
-    [SerializeField]
-    private GameObject asteroid3;
-    [SerializeField]
-    private GameObject asteroid4;
+    [SerializeField] private GameObject asteroid1;
+    [SerializeField] private GameObject asteroid2;
+    [SerializeField] private GameObject asteroid3;
+    [SerializeField] private GameObject asteroid4;
+
+    public List<GameObject> powerUps = new List<GameObject>();
+    [SerializeField] private GameObject shootPowerUp;
 
     public void BeginSpawning()
     {
         StartCoroutine("Spawn");
+        StartCoroutine("SpawnShootPowerUps");
     }
 
     IEnumerator Spawn()
@@ -56,6 +56,14 @@ public class Spawner : MonoBehaviour
 
         SpawnAsteroid();
         StartCoroutine("Spawn");
+    }
+
+    IEnumerator SpawnShootPowerUps()
+    {
+        yield return new WaitForSeconds(3);
+        
+        SpawnShootPowerUp();
+        StartCoroutine("SpawnShootPowerUps");
     }
 
     public GameObject SpawnAsteroid()
@@ -94,7 +102,7 @@ public class Spawner : MonoBehaviour
 
     public void ClearAsteroids()
     {
-        foreach(GameObject asteroid in asteroids)
+        foreach (GameObject asteroid in asteroids)
         {
             Destroy(asteroid);
         }
@@ -102,8 +110,33 @@ public class Spawner : MonoBehaviour
         asteroids.Clear();
     }
 
+    public void ClearPowerUps()
+    {
+        foreach (GameObject powerUp in powerUps)
+        {
+            Destroy(powerUp);
+        }
+
+        powerUps.Clear();
+    }
+
     public void StopSpawning()
     {
         StopCoroutine("Spawn");
+        StopCoroutine("SpawnShootPowerUps");
+    }
+
+    public GameObject SpawnShootPowerUp()
+    {
+        GameObject powerUp = Instantiate(shootPowerUp);
+        powerUp.SetActive(true);
+        float xPos = Random.Range(-8.0f, 8.0f);
+        
+        // Spawn asteroid just above top of screen at a random point along x-axis
+        powerUp.transform.position = new Vector3(xPos, 7.35f, 0);
+
+        powerUps.Add(powerUp);
+
+        return powerUp;
     }
 }
