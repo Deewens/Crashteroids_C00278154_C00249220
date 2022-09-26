@@ -120,15 +120,17 @@ public class TestSuite
     public IEnumerator CheckIfTextUpdates()
     {
         game.NewGame();
+        var expectedLives = game.lives;
         yield return new WaitForSeconds(0.1f);
         string lifeText = game.GetLifeText();
-        Assert.True(lifeText.EndsWith(game.lives.ToString()));
+        Assert.True(lifeText.EndsWith(expectedLives.ToString()));
 
         Game.LoseLife();
+        expectedLives--;
 
         yield return new WaitForSeconds(0.1f);
         lifeText = game.GetLifeText();
-        Assert.True(lifeText.EndsWith(game.lives.ToString()));
+        Assert.True(lifeText.EndsWith(expectedLives.ToString()));
     }
 
     [UnityTest]
