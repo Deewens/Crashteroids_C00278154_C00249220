@@ -45,6 +45,9 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private GameObject asteroid4;
 
+    [SerializeField]
+    private GameObject powerup;
+
     public void BeginSpawning()
     {
         StartCoroutine("Spawn");

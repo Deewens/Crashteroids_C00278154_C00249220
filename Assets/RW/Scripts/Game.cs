@@ -36,6 +36,7 @@ using UnityEngine.UI;
 public class Game : MonoBehaviour
 {
     public int score = 0;
+    public int lives = 0;
     public bool isGameOver = false;
 
     [SerializeField]
@@ -49,6 +50,8 @@ public class Game : MonoBehaviour
     [SerializeField]
     private Text titleText;
     [SerializeField]
+    private Text lifeText;
+    [SerializeField]
     private Spawner spawner;
 
     private static Game instance;
@@ -59,10 +62,21 @@ public class Game : MonoBehaviour
         titleText.enabled = true;
         gameOverText.enabled = false;
         scoreText.enabled = false;
+        lifeText.enabled = true;
         startGameButton.SetActive(true);
     }
 
-    public static void GameOver()
+    public static void LoseLife()
+    {
+        instance.lives--;
+        instance.lifeText.text = "Lives: " + instance.lives;
+        if (instance.lives <= 0)
+        {
+            GameOver();
+        }
+    }
+
+    private static void GameOver()
     {
         instance.titleText.enabled = true;
         instance.startGameButton.SetActive(true);
@@ -82,6 +96,9 @@ public class Game : MonoBehaviour
         score = 0;
         scoreText.text = "Score: " + score;
         scoreText.enabled = true;
+        lives = 3;
+        lifeText.text = "Lives: " + lives;
+        lifeText.enabled = true;
         spawner.BeginSpawning();
         shipModel.GetComponent<Ship>().RepairShip();
         spawner.ClearAsteroids();
@@ -102,5 +119,10 @@ public class Game : MonoBehaviour
     public Spawner GetSpawner()
     {
         return spawner.GetComponent<Spawner>();
+    }
+
+    public string GetLifeText()
+    {
+        return instance.lifeText.text;
     }
 }
