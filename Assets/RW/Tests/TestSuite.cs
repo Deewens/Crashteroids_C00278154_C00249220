@@ -31,15 +31,15 @@ public class TestSuite
         Assert.Less(asteroid.transform.position.y, initialYPos);
     }
 
-    [UnityTest]
-    public IEnumerator GameOverOccursOnAsteroidCollision()
-    {
-        GameObject asteroid = game.GetSpawner().SpawnAsteroid();
-        asteroid.transform.position = game.GetShip().transform.position;
-        yield return new WaitForSeconds(0.1f);
+    //[UnityTest]
+    //public IEnumerator GameOverOccursOnAsteroidCollision()
+    //{
+    //    GameObject asteroid = game.GetSpawner().SpawnAsteroid();
+    //    asteroid.transform.position = game.GetShip().transform.position;
+    //    yield return new WaitForSeconds(0.1f);
 
-        Assert.True(game.isGameOver);
-    }
+    //    Assert.True(game.isGameOver);
+    //}
 
     [UnityTest]
     public IEnumerator NewGameRestartsGame()
@@ -114,5 +114,42 @@ public class TestSuite
         game.GetShip().MoveRight();
         yield return new WaitForSeconds(0.1f);
         Assert.Greater(game.GetShip().transform.position.x, initalPos.x);
+    }
+
+    [UnityTest]
+    public IEnumerator CheckIfTextUpdates()
+    {
+        game.NewGame();
+        yield return new WaitForSeconds(0.1f);
+        string lifeText = game.GetLifeText();
+        Assert.True(lifeText.EndsWith(game.lives.ToString()));
+
+        Game.LoseLife();
+
+        yield return new WaitForSeconds(0.1f);
+        lifeText = game.GetLifeText();
+        Assert.True(lifeText.EndsWith(game.lives.ToString()));
+    }
+
+    [UnityTest]
+    public IEnumerator CheckIfAsteroidCollisionApplies()
+    {
+        game.NewGame();
+        var expectedLives = game.lives - 1;
+        GameObject asteroid = game.GetSpawner().SpawnAsteroid();
+        asteroid.transform.position = game.GetShip().transform.position;
+        yield return new WaitForSeconds(0.1f);
+
+        Assert.AreEqual(expectedLives, game.lives);
+        UnityEngine.Assertions.Assert.IsNull(asteroid);
+    }
+
+    [UnityTest]
+    public IEnumerator CheckIfNoLivesIsGameOver()
+    {
+        game.lives = 1;
+        Game.LoseLife();
+        yield return new WaitForSeconds(0.1f);
+        Assert.True(game.isGameOver);
     }
 }

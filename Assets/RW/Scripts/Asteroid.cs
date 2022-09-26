@@ -55,7 +55,7 @@ public class Asteroid : MonoBehaviour
     {
         if (collision.gameObject.name == "ShipModel")
         {
-            Game.GameOver();
+            Game.LoseLife();
             Destroy(gameObject);
         }
     }
